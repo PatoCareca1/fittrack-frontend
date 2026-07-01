@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#docs
+CLAUDE.md
+AGENTS.md
+*.pdf
+FitTrack - Protótipo.html
+FitTrack.dc.html
+FitTrack-print-e4lfw5.dc.html
+FitTrack - Protótipo.html
+.thumbnail
+
+
