@@ -1,6 +1,6 @@
 # Progress — fittrack-frontend
 
-Última atualização: 2026-07-01
+Última atualização: 2026-07-02
 
 ## Papel deste repo
 
@@ -39,9 +39,11 @@ API real por trás dessas telas ainda (só o login consome o backend de verdade)
 
 ## O que falta / decisões pendentes
 
-1. **Backend `professional` não existe.** `fittrack-backend/apps/` hoje só tem `users`,
-   `body`, `workouts`, `diet`. Sem esse app (vínculo aluno-profissional, atribuições,
-   `GET /professional/students/` etc.), o painel não tem API real para consumir.
+1. **Backend `professional` existe desde 2026-07-02** (vínculo por convite,
+   `GET /professional/students/`, atribuição de treino — ver
+   `fittrack-backend/progress.md`). Próximo passo aqui: substituir o mock do
+   dashboard/lista de alunos por chamadas reais via `src/lib/api.ts`. Atribuição de
+   **dieta** ainda depende do app `diet` (stub no backend).
 2. **Sem guarda de autenticação nas rotas do painel** — `/dashboard` e as demais são
    acessíveis direto, sem checar token. Precisa de um middleware ou layout guard antes
    de ir para produção.
