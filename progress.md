@@ -42,8 +42,10 @@ API real por trás dessas telas ainda (só o login consome o backend de verdade)
 1. **Backend `professional` existe desde 2026-07-02** (vínculo por convite,
    `GET /professional/students/`, atribuição de treino — ver
    `fittrack-backend/progress.md`). Próximo passo aqui: substituir o mock do
-   dashboard/lista de alunos por chamadas reais via `src/lib/api.ts`. Atribuição de
-   **dieta** ainda depende do app `diet` (stub no backend).
+   dashboard/lista de alunos por chamadas reais via `src/lib/api.ts`. O app `diet` também
+   existe desde 2026-07-03 (planos aninhados, busca TACO, atribuição de dieta via
+   `/professional/diet-assignments/`) — o editor de plano alimentar (Web05) já tem
+   API real para consumir.
 2. **Sem guarda de autenticação nas rotas do painel** — `/dashboard` e as demais são
    acessíveis direto, sem checar token. Precisa de um middleware ou layout guard antes
    de ir para produção.
