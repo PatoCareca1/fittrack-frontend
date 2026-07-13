@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { DragHandleIcon, PlusIcon, SearchIcon, TrashIcon } from "@/components/ui/icons";
 import { exerciseLibrary, type MuscleGroup, type Workout, type WorkoutExercise } from "@/lib/mock-data";
+import {
+  estimateMinutes,
+  moveExercise as moveExerciseInList,
+  reorderByDrag,
+  totalSets as sumSets,
+} from "@/lib/workout";
 
 const MUSCLE_GROUPS: (MuscleGroup | "Todos")[] = [
   "Todos",
@@ -30,10 +36,8 @@ export function WorkoutEditor({ workout }: { workout: Workout }) {
   const [query, setQuery] = useState("");
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
-  const totalSets = exercises.reduce((acc, ex) => acc + ex.sets, 0);
-  const estimatedMinutes = Math.round(
-    exercises.reduce((acc, ex) => acc + ex.sets * ((ex.restSec + 40) / 60), 0),
-  );
+  const totalSets = sumSets(exercises);
+  const estimatedMinutes = estimateMinutes(exercises);
 
   const filteredLibrary = useMemo(() => {
     return exerciseLibrary.filter((item) => {
@@ -69,27 +73,13 @@ export function WorkoutEditor({ workout }: { workout: Workout }) {
   }
 
   function moveExercise(id: string, direction: -1 | 1) {
-    setExercises((prev) => {
-      const index = prev.findIndex((ex) => ex.id === id);
-      const target = index + direction;
-      if (target < 0 || target >= prev.length) return prev;
-      const next = [...prev];
-      [next[index], next[target]] = [next[target], next[index]];
-      return next;
-    });
+    setExercises((prev) => moveExerciseInList(prev, id, direction));
   }
 
   function handleDrop(e: DragEvent<HTMLDivElement>, targetId: string) {
     e.preventDefault();
-    if (!draggedId || draggedId === targetId) return;
-    setExercises((prev) => {
-      const next = [...prev];
-      const fromIndex = next.findIndex((ex) => ex.id === draggedId);
-      const toIndex = next.findIndex((ex) => ex.id === targetId);
-      const [moved] = next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, moved);
-      return next;
-    });
+    if (!draggedId) return;
+    setExercises((prev) => reorderByDrag(prev, draggedId, targetId));
     setDraggedId(null);
   }
 

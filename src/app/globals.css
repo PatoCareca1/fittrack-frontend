@@ -21,6 +21,14 @@
   --color-text-secondary: #94a3b8;
   --color-text-muted: #64748b;
   --color-text-muted-dark: #475569;
+
+  /* Accent contextual — Personal (verde) por padrão; Nutricionista (azul) via
+     [data-account-type="nutritionist"] no shell do painel. README seção 6.6. */
+  --color-context-accent: #22c55e;
+}
+
+[data-account-type="nutritionist"] {
+  --color-context-accent: #3b82f6;
 }
 
 @theme inline {
@@ -43,6 +51,8 @@
   --color-text-secondary: var(--color-text-secondary);
   --color-text-muted: var(--color-text-muted);
   --color-text-muted-dark: var(--color-text-muted-dark);
+
+  --color-context-accent: var(--color-context-accent);
 
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);

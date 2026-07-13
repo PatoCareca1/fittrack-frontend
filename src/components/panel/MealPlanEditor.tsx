@@ -5,22 +5,9 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PlusIcon, SearchIcon, TrashIcon } from "@/components/ui/icons";
 import { foodCatalog, type FoodItem, type Meal, type MealPlan } from "@/lib/mock-data";
+import { sumMacros } from "@/lib/macros";
 
 let nextItemId = 1000;
-
-function sumMacros(meals: Meal[]) {
-  return meals
-    .flatMap((meal) => meal.items)
-    .reduce(
-      (acc, item) => ({
-        kcal: acc.kcal + item.kcal,
-        protein: acc.protein + item.protein,
-        carbs: acc.carbs + item.carbs,
-        fat: acc.fat + item.fat,
-      }),
-      { kcal: 0, protein: 0, carbs: 0, fat: 0 },
-    );
-}
 
 export function MealPlanEditor({ plan }: { plan: MealPlan }) {
   const [meals, setMeals] = useState<Meal[]>(plan.meals);

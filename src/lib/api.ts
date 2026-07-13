@@ -9,6 +9,8 @@ export class ApiError extends Error {
 interface AuthTokens {
   access: string;
   refresh: string;
+  /** Opcional — quando o backend passar a devolver o tipo de conta no login. */
+  account_type?: string;
 }
 
 export async function login(email: string, password: string): Promise<AuthTokens> {

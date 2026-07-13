@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "proto", "runtimeExecutable": "python3", "runtimeArgs": ["-m","http.server","8199","--directory","/tmp/claude-1000/-home-pato-Projetos-fittrack/70e343f0-1197-4b46-a8e5-09509e56c18c/scratchpad"], "port": 8199 }
+  ]
+}

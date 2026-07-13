@@ -7,11 +7,15 @@ import { Badge } from "@/components/ui/Badge";
 import { Logo } from "@/components/ui/Logo";
 import { CloseIcon, LogoutIcon, MenuIcon } from "@/components/ui/icons";
 import { SidebarNav } from "@/components/panel/SidebarNav";
-import { professional } from "@/lib/mock-data";
+import { useAccountType } from "@/components/panel/AccountProvider";
+import { resolveProfessional } from "@/lib/mock-data";
+import { badgeColor } from "@/lib/account";
 import { clearTokens } from "@/lib/auth";
 
 function ProfessionalFooter() {
   const router = useRouter();
+  const accountType = useAccountType();
+  const person = resolveProfessional(accountType);
 
   function handleLogout() {
     clearTokens();
@@ -20,11 +24,11 @@ function ProfessionalFooter() {
 
   return (
     <div className="flex items-center gap-3 border-t border-border px-3 py-4">
-      <Avatar name={professional.name} size={36} />
+      <Avatar name={person.name} size={36} />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-text-primary">{professional.name}</p>
-        <Badge color="primary" className="mt-0.5">
-          {professional.credential}
+        <p className="truncate text-sm font-medium text-text-primary">{person.name}</p>
+        <Badge color={badgeColor(accountType)} className="mt-0.5">
+          {person.credential}
         </Badge>
       </div>
       <button
@@ -40,9 +44,10 @@ function ProfessionalFooter() {
 
 export function PanelShell({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const accountType = useAccountType();
 
   return (
-    <div className="flex min-h-screen bg-bg">
+    <div className="flex min-h-screen bg-bg" data-account-type={accountType}>
       {/* Sidebar fixa — desktop */}
       <aside className="hidden w-[200px] shrink-0 flex-col border-r border-border bg-surface md:flex">
         <div className="flex items-center gap-2 px-4 py-5">

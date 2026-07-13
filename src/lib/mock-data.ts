@@ -29,6 +29,24 @@ export const professional: Professional = {
   credential: "CREF 012345",
 };
 
+// Persona de nutricionista — usada para demonstrar o contexto azul (accent) enquanto o
+// account_type real não vem do backend. Ver src/lib/account.ts.
+export const nutritionistProfessional: Professional = {
+  id: "prof-2",
+  name: "Juliana Alves",
+  type: "nutritionist",
+  credential: "CRN 56789",
+};
+
+const PROFESSIONALS_BY_TYPE: Record<Professional["type"], Professional> = {
+  personal: professional,
+  nutritionist: nutritionistProfessional,
+};
+
+export function resolveProfessional(type: Professional["type"]): Professional {
+  return PROFESSIONALS_BY_TYPE[type] ?? professional;
+}
+
 export interface SeriesPoint {
   date: string;
   value: number;
