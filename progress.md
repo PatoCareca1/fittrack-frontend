@@ -1,6 +1,6 @@
 # Progress — fittrack-frontend
 
-Última atualização: 2026-07-02
+Última atualização: 2026-07-13
 
 ## Papel deste repo
 
@@ -37,6 +37,41 @@ Templates, Chat, Relatórios.
 Todos os dados de aluno, treino, dieta e chat vêm de `src/lib/mock-data.ts` — não há
 API real por trás dessas telas ainda (só o login consome o backend de verdade).
 
+### Sessão 2026-07-13 — lacunas obrigatórias do brief (contexto do protótipo web aprovado)
+
+Chegou o protótipo dedicado do painel web (`FitTrack - Painel Profissional.html`,
+`.dc` do Claude Design). As telas existentes já batiam estruturalmente com ele; o escopo
+desta sessão foi **só as peças que faltavam** (as telas em si não foram reescritas):
+
+- **Contexto Personal (verde) vs Nutricionista (azul)** — dirigido por `account_type`.
+  - `src/lib/account.ts` (módulo puro): `getAccountType()` lê `localStorage`
+    (`fittrack_account_type`), default vindo da persona mock; derivações puras de rótulo
+    (`studentsNavLabel` "Meus Alunos"/"Meus Pacientes", `studentNoun`, `newStudentLabel`),
+    cor (`badgeColor`, `accentHex`) e credencial (`credentialPrefix` CREF/CRN).
+  - `AccountProvider` (`src/components/panel/AccountProvider.tsx`) resolve o tipo no
+    cliente sem mismatch de hidratação (default no 1º render, `localStorage` no `useEffect`).
+  - Accent contextual via CSS var `--color-context-accent` (verde default; azul em
+    `[data-account-type="nutritionist"]`, setado no root do `PanelShell`). O item ativo da
+    Sidebar aplica a var por **style inline** (não por utilitário Tailwind — um token
+    `@theme` auto-referente gera utilitário de forma inconsistente entre dev e prod).
+  - Sidebar (label), footer (nome/credencial/cor do badge via `resolveProfessional`) e os
+    títulos de Dashboard/Meus Alunos passam a refletir o contexto.
+- **Guarda de rota do painel** — `RequireAuth` (`src/components/panel/RequireAuth.tsx`)
+  envolve o `(panel)/layout.tsx`; sem access token → `router.replace("/login")`. MVP
+  client-side (token em `localStorage`); decisão de sessão httpOnly segue em aberto.
+- **Testes (RNF07, meta 50%)** — Vitest + jsdom + Testing Library. Lógica extraída para
+  módulos puros e testada: `src/lib/{account,macros,workout}.ts`, `adherenceLevel`/
+  `resolveProfessional` (mock-data), `auth`, `api`, e render de `AdherenceBadge`.
+  `npm run coverage` → 33 testes, ~98% de statements (bem acima de 50%). `vitest.setup.ts`
+  instala um polyfill de `localStorage` (jsdom aqui tem origem opaca e não o expõe).
+- **Login** — botão "Continuar com Google" **visual-only** (desabilitado; backend só tem
+  JWT e-mail/senha, README §4.5) + link placeholder "Criar conta profissional". Persiste
+  `account_type` do login quando o backend passar a devolvê-lo (`api.ts` já aceita o campo).
+
+Scripts novos: `npm run test`, `npm run test:watch`, `npm run coverage`.
+Nota: o `claude_design` MCP (`/design-login`) não roda em sessão não-interativa; o `.dc`
+local foi usado como fonte de verdade visual.
+
 ## O que falta / decisões pendentes
 
 1. **Backend `professional` existe desde 2026-07-02** (vínculo por convite,
@@ -46,16 +81,16 @@ API real por trás dessas telas ainda (só o login consome o backend de verdade)
    existe desde 2026-07-03 (planos aninhados, busca TACO, atribuição de dieta via
    `/professional/diet-assignments/`) — o editor de plano alimentar (Web05) já tem
    API real para consumir.
-2. **Sem guarda de autenticação nas rotas do painel** — `/dashboard` e as demais são
-   acessíveis direto, sem checar token. Precisa de um middleware ou layout guard antes
-   de ir para produção.
+2. ~~**Sem guarda de autenticação nas rotas do painel**~~ — ✅ resolvido em 2026-07-13
+   (`RequireAuth` no `(panel)/layout.tsx`). Ainda é guard client-side; para produção,
+   avaliar `middleware`/cookie httpOnly junto do item 3.
 3. **Estratégia de sessão no web não é definitiva.** Hoje é `localStorage` (simples,
    mas exposto a XSS). Decisão em aberto: cookie httpOnly via route handler proxy no
    Next.js vs. manter `localStorage` com mitigação (CSP, sanitização). Precisa alinhar
    com Amanda (backend) antes de implementar de vez.
-4. Sem testes automatizados ainda (RNF07 pede cobertura mínima de 50% no mobile / 70%
-   no backend — o painel web não tem meta definida nos documentos, mas não tem nenhum
-   teste hoje).
+4. ~~Sem testes automatizados ainda~~ — ✅ resolvido em 2026-07-13 (Vitest, 33 testes,
+   ~98% de cobertura nos módulos de lógica; meta de 50% atingida com folga). Próximo:
+   ampliar para os componentes de tela conforme forem ligados à API real.
 5. `/templates` e `/relatorios` não têm conteúdo especificado no
    `FitTrack_Decisoes_v2.pdf` (só aparecem citados na estrutura da sidebar) — ficaram
    como placeholder até existir uma decisão de produto sobre o que exibem.
